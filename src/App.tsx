@@ -1,7 +1,5 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { IonApp, IonContent, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -21,22 +19,41 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { useAuthStore } from './store/auth';
+import Navigation from './components/Navigation';
+import { IonReactRouter } from '@ionic/react-router';
+import { Redirect, Route } from 'react-router';
+import NewPassword from './pages/ProfilePage/NewPassword';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 setupIonicReact();
 
-const App: React.FC = () => (
+function App() {
+  const isAuth = useAuthStore(state => state.isAuth)
+  const profile = useAuthStore(state => state.profile)
+  return (
+
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <LoginPage></LoginPage>
+          <Route path='/auth/login' component={LoginPage}></Route>
+          <Route path='/auth/me' component={ () => 
+            <ProtectedRoute isAllowed={isAuth}>
+              <ProfilePage/>
+            </ProtectedRoute>}></Route>
+          <Redirect to='/auth/login'/>
+        </IonRouterOutlet>
+      </IonReactRouter>
+      {(() => {
+        if (isAuth && profile !== null) {
+          return <Navigation />;
+        } 
+      })()}
   </IonApp>
-);
+  )
+}
 
 export default App;
