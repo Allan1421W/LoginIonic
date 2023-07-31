@@ -1,8 +1,8 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
-import { passwordRequest } from '../../auth/auth';
+import { passwordRequest } from '../../../auth/auth';
 import { useHistory } from 'react-router-dom';
 import { arrowBackOutline } from 'ionicons/icons';
 
@@ -16,10 +16,13 @@ const NewPassword: React.FC = () => {
   const [savePassword, setSavePassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+
   type FormValues = {
     password: string;
     confPassword: string;
     email: string;
+    code: string;
   };
 
   const toggleShowPassword = () => {
@@ -42,16 +45,23 @@ const NewPassword: React.FC = () => {
             password: '',
             confPassword: '',
             email: '',
+            code: 1,
           }}
           validate={(valores) => {
             let errores: Partial<FormValues> = {};
 
-            if(!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(valores.email)){
+            //Validacion del Correo
+            if(!valores.email){
+              errores.email = "Introduzca un Correo Electronico"
+            } else if(!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(valores.email)){
               errores.email = "El correo solo puede contener letras, numeros, guiones y guion bajo."
             } 
 
             //Validacion de la Contraseña
-            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,15}/.test(valores.password)) {
+            if(!valores.password){
+              errores.password = "Introduzca una Contraseña"
+            }
+            else if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,15}/.test(valores.password)) {
               errores.password = "La contraseña debe tener entre 8 y 15 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial";
             }
 
@@ -60,31 +70,48 @@ const NewPassword: React.FC = () => {
               errores.confPassword = "Las contraseñas no son iguales";
             }
 
+            //Validacion del Codigo
+            if(!valores.code){
+              errores.code = "Ingresa un Codigo"
+              //@ts-ignore
+            } else if (!/^[1-9]\d*$/.test(valores.code)){
+              errores.code = "El codigo solo puede contener numeros"
+            }
+
             return errores;
           }}
-          onSubmit={(valores, { resetForm }) => {
+          onSubmit={ async (valores, { resetForm }) => {
             try {
-            passwordRequest(valores.email, valores.password);
+            const response = await passwordRequest(valores.email, valores.password, valores.code);
             resetForm();
-            console.log(valores);
+            console.log(response);
             setSavePassword(true);
             setTimeout(() => setSavePassword(false), 5000);
             } catch(error){
+              setShowErrorAlert(true)
               console.log('No se pudo guardar la contraseña: ' + error)
+              console.log(valores)
             }
           }}
         >
           {({ errors }) => (
-            <Form>
+            <Form className='conrtainer-form'>
               <div>
                 <label htmlFor='email'>Correo electronico:</label><br />
                 <div>
-                  <Field type='email' id='email' name='email' placeholder='correo@correo@com'/><br />
+                  <Field id='email' name='email' placeholder='correo@correo.com'/><br />
                   <ErrorMessage name='email' component={() =><>{errors.email}</>}/>
                 </div>
               </div><br />
               <div>
-                <label htmlFor='password'>Contraseña</label><br />
+                <label htmlFor='code'>Codigo para Cambiar Contraseña:</label><br />
+                <div>
+                  <Field type='number' id='code' name='code' placeholder='12231'/><br />
+                  <ErrorMessage name='code' component={() => <>{errors.code}</>}/>
+                </div>
+              </div><br />
+              <div>
+                <label htmlFor='password'>Nueva Contraseña:</label><br />
                 <div style={{ position: 'relative' }}>
                   <Field
                     type={showPassword ?'text' : 'password'}
@@ -104,7 +131,7 @@ const NewPassword: React.FC = () => {
               </div>
               <br />
               <div>
-                <label htmlFor='confPassword'>Confirma la contraseña</label><br />
+                <label htmlFor='confPassword'>Confirma la contraseña:</label><br />
                 <div style={{ position: 'relative' }}>
                   <Field
                     type={showPassword ? 'text' : 'password'}
@@ -123,8 +150,19 @@ const NewPassword: React.FC = () => {
                 <ErrorMessage name='confPassword' component={() => <>{errors.confPassword}</>} />
               </div>
               <br />
-              <button type='submit'>Guardar Contraseña</button>
-              {savePassword && <p className='exito'>Contraseña guardada correctamente</p>}
+              <IonButton type='submit'>Guardar Contraseña</IonButton>
+              <IonAlert
+                isOpen={savePassword}
+                onDidDismiss={() => setSavePassword(false)}
+                header='Contraseña Guardada Correctamente'
+                buttons={['Aceptar']}
+              />
+              <IonAlert 
+              isOpen={showErrorAlert}
+              onDidDismiss={() => setShowErrorAlert(false)}
+              header='Error al Cambiar la Contraseña'
+              buttons={['Aceptar']}
+              />
             </Form>
           )}
         </Formik>

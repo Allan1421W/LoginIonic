@@ -10,7 +10,8 @@ import ProfilePage from '../pages/ProfilePage/ProfilePage'
 import PublicityPage from '../pages/PublicityPage/PublicityPage'
 import { ProtectedRoute } from './ProtectedRoute'
 import { useAuthStore } from '../store/auth'
-import NewPassword from '../pages/ProfilePage/NewPassword'
+import NewPassword from '../pages/ProfilePage/NewPassword/NewPassword'
+import ForgotPassword from '../pages/ProfilePage/ForgotPassword/ForgotPassword'
 
 function Navigation() {
 
@@ -60,7 +61,7 @@ function Navigation() {
               </IonItem>
             </IonMenuToggle>
             <IonMenuToggle>
-              <IonItem routerLink='/auth/login' routerDirection='none' onClick={() => {
+              <IonItem className='logout' routerLink='/auth/login' routerDirection='none' onClick={() => {
                     logout()
                     navigate.push('/auth/login')}}>
                 <IonIcon color='medium' slot='start' icon={logInOutline}></IonIcon>
@@ -94,6 +95,11 @@ function Navigation() {
         <Route exact path='/auth/new-password' component={ () => 
           <ProtectedRoute isAllowed={isAuth}>
             <NewPassword/>
+          </ProtectedRoute>
+        }></Route>
+        <Route exact path='/auth/forgot-password' component={ () => 
+          <ProtectedRoute isAllowed={isAuth}>
+            <ForgotPassword/>
           </ProtectedRoute>
         }></Route>
         <Redirect to='/auth/me'></Redirect>

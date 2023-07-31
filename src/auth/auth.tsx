@@ -1,17 +1,24 @@
 import api from "../api/api";
 import axios from "../libs/axios";
-import { useAuthStore } from "../store/auth";
 
 export const loginRequest = async (email: string, password: string) => {
-  return api.post('/auth/login', {
-    email,
-    password
-  });
+  try {
+    return api.post('/auth/login', {
+      email,
+      password
+    })
+  } catch (error) {
+      throw error
+  }
 };
 
 export const profileRequest = async () => {
-  return await axios.get('/auth/me')
-};
+  try {
+    return await axios.get('/auth/me')
+  } catch (error) {
+    throw error
+  }
+}
 
 export const updateRequest = async (dataProfile: any) => {
   return await axios.patch('/auth/me', dataProfile);
@@ -30,16 +37,23 @@ export async function performUpdateRequest(data: dataProfile) {
       const response = await updateRequest(data);
       return response;
     } catch (error) {
-      throw new Error('Error al actualizar el perfil: ' + error);
+        throw new Error('Error al actualizar el perfil: ' + error);
     }
   }
 
-  export const passwordRequest = async (password: string, email: string) => {
-    try {
-      const response = await axios.post('/auth/new-password', { password });
-      return response.data; 
-    } catch (error) {
-      
-      throw error;
-    }
-  };
+export const passwordRequest = async (password: string, email: string, code: number) => {
+  try {
+    const response = await axios.post('/auth/new-password', { password, email, code });
+    return response.data; 
+  } catch (error) {
+     throw error;
+  }
+};
+
+export const codeRequest = async (email: string) => {
+  try {
+    return await axios.post('/auth/forgot-password', { email })
+  } catch (error) {
+    throw error;
+  }
+}

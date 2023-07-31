@@ -23,10 +23,11 @@ import { useAuthStore } from './store/auth';
 import Navigation from './components/Navigation';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router';
-import NewPassword from './pages/ProfilePage/NewPassword';
+import NewPassword from './pages/ProfilePage/NewPassword/NewPassword';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import ForgotPassword from './pages/ProfilePage/ForgotPassword/ForgotPassword';
 
 setupIonicReact();
 
@@ -45,6 +46,8 @@ function App() {
               <ProfilePage/>
             </ProtectedRoute>}></Route>
           <Redirect to='/auth/login'/>
+          <Route path='/auth/forgot-password' component={ForgotPassword}></Route>
+          <Route path='/auth/new-password' component={NewPassword}></Route>
         </IonRouterOutlet>
       </IonReactRouter>
       {(() => {

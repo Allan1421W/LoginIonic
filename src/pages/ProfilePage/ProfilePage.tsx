@@ -1,16 +1,14 @@
 import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonLabel, IonMenuButton, IonModal, IonPage, IonRouterOutlet, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
-import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import { useState } from 'react';
 import { useAuthStore } from '../../store/auth';
-import UpdatePage from './UpdatePage';
+import UpdatePage from './UpdatePage/UpdatePage';
 
-import { Route, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 const ProfilePage: React.FC = () => {
     const history= useHistory()
     const navigate = () => {
-      history.push('/auth/new-password');
+      history.push('/auth/forgot-password');
     };
     const profile = useAuthStore(state => state.profile)
 
@@ -40,15 +38,8 @@ const ProfilePage: React.FC = () => {
                 </IonRow>
                 <IonRow>
                   <IonCol>
-                  <IonLabel>Genero:</IonLabel><br />
-                      {(() => {
-                        if (profile.gender == 'MALE') {
-                          return "Femenino";
-                        } else if(profile.gender == 'FEMALE'){
-                          return "Masculino";
-                        }
-                      })()}
-                      
+                    <IonLabel>Genero:</IonLabel><br />
+                    {profile.gender === "MALE" ? "Masculino" : "Femenino"}
                   </IonCol>
                   <IonCol>
                   <IonLabel>Ciudad:</IonLabel><br />
@@ -68,7 +59,7 @@ const ProfilePage: React.FC = () => {
             </IonGrid>
         </IonContent>
         <IonContent className="ion-padding">
-        <IonButton expand="block" onClick={() => setIsOpenUp(true)}>
+        <IonButton expand="block" onClick={() => setIsOpenUp(true)} routerDirection='none'>
           Actualizar Usuario
         </IonButton>
         <IonModal isOpen={isOpenUp}>
@@ -86,7 +77,7 @@ const ProfilePage: React.FC = () => {
         </IonModal>
       </IonContent>
       <IonContent>
-            <IonButton onClick={navigate} routerDirection='none'>Cambiar contraseña</IonButton>
+        <IonButton expand='block' onClick={navigate} routerDirection='none'>Cambiar contraseña</IonButton>
       </IonContent>
     </IonPage>
   )

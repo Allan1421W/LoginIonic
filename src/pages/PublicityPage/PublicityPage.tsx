@@ -14,7 +14,7 @@ function PublicityPage() {
         </IonHeader>
         <IonContent>
           <IonLabel>
-            HAKSDFJLKASDFJKLHSD
+            Hola
           </IonLabel>
         </IonContent>
     </IonPage>

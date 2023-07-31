@@ -1,14 +1,18 @@
 import {useState} from 'react';
-import {useAuthStore} from '../../store/auth'
+import {useAuthStore} from '../../../store/auth'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { performUpdateRequest, updateRequest } from '../../auth/auth';
+import { performUpdateRequest, updateRequest } from '../../../auth/auth';
+import { IonAlert, IonButton } from '@ionic/react';
+import { useHistory } from 'react-router';
+import LoginPage from '../../LoginPage/LoginPage';
 
 
 function UpdatePage() {
 
-  const [formulario, setFormulario] = useState(false);
-  const logout = useAuthStore(state => state.logout)
-  const profile = useAuthStore(state => state.profile)
+  const profile = useAuthStore(state => state.profile);
+
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   type FormValues = {
     firstName: string;
@@ -78,13 +82,12 @@ function UpdatePage() {
           onSubmit={async (valores: FormValues, { resetForm }) => {
             try {
               const response = await performUpdateRequest(valores);
-              console.log(response); // Aquí puedes mostrar o manejar la respuesta de la solicitud, por ejemplo, mostrar un mensaje de éxito
+              console.log(response); 
               resetForm();
-              setFormulario(true);
-              setTimeout(() => setFormulario(false), 5000);
+              setShowAlert(true)
             } catch (error) {
-              console.log('Error al actualizar el perfil: ' + error);
-              // Aquí puedes mostrar o manejar el error, por ejemplo, mostrar un mensaje de error
+              setShowErrorAlert(true)
+              throw error;
             }
           }}
         >
@@ -92,13 +95,13 @@ function UpdatePage() {
             <Form className='formulario'>
               <div>
                 <label htmlFor='firstName'>Nombre</label><br/>
-                <Field type='text' id='firstName' name='firstName' placeholder='Allan'/>
+                <Field type='text' id='firstName' name='firstName' placeholder='Escribe tu Nombre'/><br />
                 <ErrorMessage name='firstName' component={() => <>{errors.firstName}</>} />
               </div><br/>
 
               <div>
                 <label htmlFor='lastName'>Apellido</label><br/>
-                <Field type='text' id='lastName' name='lastName' placeholder='Barreto' />
+                <Field type='text' id='lastName' name='lastName' placeholder='Escribe tu Apellido' /><br />
                 <ErrorMessage name='lastName' component={() => <>{errors.lastName}</>} />
               </div><br/>
 
@@ -107,29 +110,40 @@ function UpdatePage() {
                 <Field name='gender' as="select">
                   <option value="MALE">Masculino</option>
                   <option value="FEMALE">Femenino</option>
-                </Field>
+                </Field><br />
                 <ErrorMessage name='gender' component={() => <>{errors.gender}</>} />
               </div><br/>
 
               <div>
                 <label htmlFor='city'>Ciudad</label><br/>
-                <Field type="text" id="city" name='city' placeholder="Ingresa una ciudad"/>
+                <Field type="text" id="city" name='city' placeholder="Escribe una Ciudad"/><br />
                 <ErrorMessage name='city' component={() => <>{errors.city}</>} />
               </div><br/>
               
               <div>
                 <label htmlFor='documentNumber'>Numero de Documento</label><br/>
-                  <Field type="text" id="documentNumber" name="documentNumber" placeholder="1098651912"/>
+                  <Field type="text" id="documentNumber" name="documentNumber" placeholder="Escribe tu Numero de Documento"/><br />
                 <ErrorMessage name='documentNumber' component={() => <>{errors.documentNumber}</>} />
               </div><br/>
 
               <div>
                 <label htmlFor='phoneNumber'>Numero de Celular</label><br/>
-                <Field type="text" id="phoneNumber" name="phoneNumber" placeholder="3146178812"/>
+                <Field type="text" id="phoneNumber" name="phoneNumber" placeholder="Escribe tu Numero de Celular"/><br />
                 <ErrorMessage name="phoneNumber" component={() => <>{errors.phoneNumber}</>}/>
               </div><br/>
-              <button type='submit'>Actualizar</button>
-              {formulario && <p className='exito'>Datos actualizados con exito</p>}
+              <IonButton type='submit'>Actualizar</IonButton>
+              <IonAlert
+                isOpen={showAlert}
+                onDidDismiss={() => setShowAlert(false)}
+                header='Usuario Actualizado Correctamente'
+                buttons={['Aceptar']}
+              />
+              <IonAlert
+                isOpen={showErrorAlert}
+                onDidDismiss={() => setShowErrorAlert(false)}
+                header='Error al Actualizar Usuario'
+                buttons={['Aceptar']}
+              />
             </Form>
           )}
         </Formik>
