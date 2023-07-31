@@ -15,7 +15,6 @@ const NewPassword: React.FC = () => {
 
   const [savePassword, setSavePassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   type FormValues = {
@@ -99,14 +98,14 @@ const NewPassword: React.FC = () => {
               <div>
                 <label htmlFor='email'>Correo electronico:</label><br />
                 <div>
-                  <Field id='email' name='email' placeholder='correo@correo.com'/><br />
+                  <Field id='email' name='email' placeholder='Escribe un Correo Electronico'/><br />
                   <ErrorMessage name='email' component={() =><>{errors.email}</>}/>
                 </div>
               </div><br />
               <div>
                 <label htmlFor='code'>Codigo para Cambiar Contraseña:</label><br />
                 <div>
-                  <Field type='number' id='code' name='code' placeholder='12231'/><br />
+                  <Field type='number' id='code' name='code' placeholder='Escribe el Codigo Enviado'/><br />
                   <ErrorMessage name='code' component={() => <>{errors.code}</>}/>
                 </div>
               </div><br />
@@ -117,7 +116,7 @@ const NewPassword: React.FC = () => {
                     type={showPassword ?'text' : 'password'}
                     id='password'
                     name='password'
-                    placeholder='************'
+                    placeholder='Escribe la Nueva Contraseña'
                   />
                   <span
                     onClick={toggleShowPassword}
@@ -137,7 +136,7 @@ const NewPassword: React.FC = () => {
                     type={showPassword ? 'text' : 'password'}
                     id='confPassword'
                     name='confPassword'
-                    placeholder='*************'
+                    placeholder='Confirma la Contraseña'
                   />
                   <span
                     onClick={toggleShowPassword}

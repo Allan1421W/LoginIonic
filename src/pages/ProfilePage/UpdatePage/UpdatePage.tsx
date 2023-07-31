@@ -3,9 +3,6 @@ import {useAuthStore} from '../../../store/auth'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { performUpdateRequest, updateRequest } from '../../../auth/auth';
 import { IonAlert, IonButton } from '@ionic/react';
-import { useHistory } from 'react-router';
-import LoginPage from '../../LoginPage/LoginPage';
-
 
 function UpdatePage() {
 

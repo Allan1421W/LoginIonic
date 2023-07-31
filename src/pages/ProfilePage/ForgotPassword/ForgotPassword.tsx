@@ -59,7 +59,7 @@ const ForgotPassword: React.FC = () => {
             <Form>
               <div>
                 <label htmlFor="email">Introduce tu correo</label><br />
-                <Field id='email' name='email' placeholder='correo@correo.com' /><br/>
+                <Field id='email' name='email' placeholder='Escribe tu Correo Electronico' /><br/>
                 <ErrorMessage name='email' component={() => <>{errors.email}</>}/>
               </div>
               <IonButton type="submit">
