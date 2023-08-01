@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
-import { IonAlert, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
 import { passwordRequest } from '../../../auth/auth';
 import { useHistory } from 'react-router-dom';
@@ -94,11 +94,12 @@ const NewPassword: React.FC = () => {
           }}
         >
           {({ errors }) => (
-            <Form className='conrtainer-form'>
+            <Form className='container-form'>
               <div>
                 <label htmlFor='email'>Correo electronico:</label><br />
                 <div>
-                  <Field id='email' name='email' placeholder='Escribe un Correo Electronico'/><br />
+                  <Field id='email' name='email' placeholder='Escribe un Correo Electronico'>
+                  </Field><br />
                   <ErrorMessage name='email' component={() =><>{errors.email}</>}/>
                 </div>
               </div><br />

@@ -3,10 +3,7 @@ import axios from "../libs/axios";
 
 export const loginRequest = async (email: string, password: string) => {
   try {
-    return api.post('/auth/login', {
-      email,
-      password
-    })
+    return api.post('/auth/login', { email, password })
   } catch (error) {
       throw error
   }
@@ -32,12 +29,21 @@ type dataProfile = {
     documentNumber: string,
     phoneNumber: string,
 }
+
 export async function performUpdateRequest(data: dataProfile) {
     try {
       const response = await updateRequest(data);
       return response;
     } catch (error) {
         throw new Error('Error al actualizar el perfil: ' + error);
+    }
+  }
+
+  export const codeRequest = async (email: string) => {
+    try {
+      return await axios.post('/auth/forgot-password', { email })
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -49,11 +55,3 @@ export const passwordRequest = async (password: string, email: string, code: num
      throw error;
   }
 };
-
-export const codeRequest = async (email: string) => {
-  try {
-    return await axios.post('/auth/forgot-password', { email })
-  } catch (error) {
-    throw error;
-  }
-}
